@@ -1,5 +1,6 @@
 package com.franklin.keepme;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -9,27 +10,24 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
+import android.widget.Button;
 
-public class MainActivity extends AppCompatActivity {
+public class SignInActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
-        super.getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
-        /*
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        //super.getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+        Button startSignInBtn = (Button) findViewById(R.id.login_button);
+        startSignInBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onClick(View v) {
+                Intent intent=new Intent();
+                intent.setClass(SignInActivity.this, HomeActivity.class);
+                startActivity(intent);
             }
         });
-        */
     }
 
 @Override

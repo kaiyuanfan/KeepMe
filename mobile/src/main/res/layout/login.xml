@@ -89,6 +89,7 @@
     app:layout_marginLeftPercent="8%"
     app:layout_heightPercent="8.2%"
     app:layout_widthPercent="84%"
+    android:id="@+id/login_button"
     android:background="@drawable/simple_button"
     android:text="@string/login_button"
     android:gravity="center"

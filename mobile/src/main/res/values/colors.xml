@@ -5,4 +5,5 @@
     <color name="colorAccent">#FFC761</color>
     <color name="login_button_background">#FB406E</color>
     <color name="grid">#1d1d26</color>
+    <color name="background">#FAFAFA</color>
 </resources>
