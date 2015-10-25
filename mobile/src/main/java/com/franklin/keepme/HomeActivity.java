@@ -38,6 +38,7 @@ public class HomeActivity extends Activity {
     private int year = currentDate.get(Calendar.YEAR), curYear = year;
     private int month = currentDate.get(Calendar.MONTH), curMonth = month;
     private int day = currentDate.get(Calendar.DATE), curDay = day;
+    private int week = currentDate.get(Calendar.DAY_OF_WEEK)-1, curWeek = week;
     private int numOfDayInMonth = currentDate.getActualMaximum(Calendar.DAY_OF_MONTH);
 
     private HorizontalScrollView m_tabScroll = null;
@@ -83,6 +84,7 @@ public class HomeActivity extends Activity {
                 currentDate.set(Calendar.DATE, 1);
                 month = currentDate.get(Calendar.MONTH);
                 day = 1;
+                week = currentDate.get(Calendar.DAY_OF_WEEK)-1;
                 numOfDayInMonth = currentDate.getActualMaximum(Calendar.DAY_OF_MONTH);
                 onMonthChanged();
             }
@@ -102,14 +104,15 @@ public class HomeActivity extends Activity {
         }
         m_contentPager.setAdapter(new TabContentViewPagerAdapter());
         m_contentPager.addOnPageChangeListener(new TabContentPager_OnPageChangeListener());
-        CheckTab(m_tabList.get(0));
+        m_tabScroll.fullScroll(HorizontalScrollView.FOCUS_LEFT);
+        spinner.setSelection(month);
     }
 
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (isFirstLoad) {
             isFirstLoad = false;
-            CheckTab(m_tabList.get(day));
+            CheckTab(m_tabList.get(day-1));
         }
     }
 
@@ -123,7 +126,7 @@ public class HomeActivity extends Activity {
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.MATCH_PARENT));
         tab.setGravity(Gravity.CENTER);
-        tab.setText("Tab" + dayInMonth);
+        tab.setText(DateUtils.WEEK[(week+dayInMonth+350-day)%7] + dayInMonth);
         tab.setTag(dayInMonth - 1);// 通过tag保存与内容视图关联的序号，从0开始计数
         tab.setOnClickListener(tabOnClickListener);
         tab.setBackgroundResource(R.drawable.tab_normal_shape);
@@ -138,7 +141,6 @@ public class HomeActivity extends Activity {
     }
 
     private void CheckTab(View v) {
-        spinner.setSelection(month);
         if (m_currentTab != null) {
             m_currentTab.setBackgroundColor(getResources().getColor(R.color.background));
         }
