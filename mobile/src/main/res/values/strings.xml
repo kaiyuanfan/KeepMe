@@ -8,4 +8,14 @@
     <string name="login_password">Password</string>
     <string name="login_forget_password">Forget Password</string>
     <string name="login_button">Sign In</string>
+    <string name="title_activity_create">createActivity</string>
+    <string name="title_activity_group">GroupActivity</string>
+    <string name="create_add_new">Add New</string>
+    <string name="create_input_title">TITLE</string>
+    <string name="create_input_description">DESCRIPTION</string>
+    <string name="create_input_date">DATE</string>
+    <string name="create_input_location">LOCATION</string>
+    <string name="create_input_notify">NOTIFY</string>
+    <string name="create_input_to">To</string>
+    <string name="create_input_from">From</string>
 </resources>

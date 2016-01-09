@@ -4,7 +4,8 @@
     <color name="colorPrimaryDark">#1A8979</color>
     <color name="colorAccent">#FFC761</color>
     <color name="login_button_background">#FB406E</color>
-    <color name="grid">#1d1d26</color>
+    <color name="grid">#E8E8E9</color>
     <color name="background">#FAFAFA</color>
     <color name="WHITE">#FFFFFF</color>
+    <color name="text">#737373</color>
 </resources>

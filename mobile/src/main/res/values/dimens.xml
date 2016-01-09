@@ -9,6 +9,6 @@
 
     <dimen name="login_mark_left">113dp</dimen>
     <dimen name="login_mark_up">120dp</dimen>
-    
+
     <dimen name="login_email_up">394dp</dimen>
 </resources>

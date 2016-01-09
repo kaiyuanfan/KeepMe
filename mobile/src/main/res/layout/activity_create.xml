@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="43"
+        android:orientation="horizontal"
+        android:id="@+id/create_title">
+       <TextView
+           android:layout_height="wrap_content"
+           android:layout_gravity="center"
+           android:layout_width="wrap_content"
+           android:text="@string/create_add_new"
+           android:layout_centerVertical="true"
+           android:layout_centerHorizontal="true"
+           android:layout_centerInParent="true"
+           android:textSize="20sp"
+           >
+           </TextView>
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="20dp"
+            android:layout_centerVertical="true"
+            android:clickable="true"
+            android:id="@+id/create_check_mark"
+            android:src="@drawable/check_mark"/>
+
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="402"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:id="@+id/create_content">
+        <View
+            android:layout_width="0dp"
+            android:layout_weight="20"
+            android:layout_height="match_parent"/>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="210"
+            android:orientation="vertical"
+            android:showDividers="none"
+            android:divider="@drawable/divider_line"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_height="0dp"
+                android:layout_weight="23"
+                android:layout_width="wrap_content"
+                android:text="@string/create_input_title"
+                android:textSize="14sp"
+                android:gravity="center_vertical"
+                />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="23"
+                android:inputType="text"
+                android:textSize="18sp"
+                android:gravity="center_vertical"
+                android:background="@drawable/bottom_frame"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="23"
+                android:text="@string/create_input_description"
+                android:textSize="14sp"
+                android:gravity="center_vertical" />
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="23"
+                android:inputType="text"
+                android:textSize="18sp"
+                android:gravity="center_vertical"
+                android:background="@drawable/bottom_frame"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="23"
+                android:text="@string/create_input_date"
+                android:textSize="14sp"
+                android:gravity="center_vertical" />
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="23"
+                android:textSize="18sp"
+                android:editable="false"
+                android:gravity="center_vertical"
+                android:background="@drawable/bottom_frame"
+                android:id="@+id/create_date_input"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="23">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/create_input_from"
+                    android:textSize="14sp"
+                    android:gravity="center_vertical"
+                    />
+                <View
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"/>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/create_input_to"
+                    android:textSize="14sp"
+                    android:gravity="center_vertical"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="23">
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:textSize="18sp"
+                    android:background="@drawable/bottom_frame"
+                    android:id="@+id/create_input_time_from"
+                    />
+                <View
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"/>
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:textSize="18sp"
+                    android:background="@drawable/bottom_frame"
+                    android:id="@+id/create_input_time_to"
+                    />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="23"
+                android:text="@string/create_input_notify"
+                android:textSize="14sp"
+                android:gravity="center_vertical" />
+
+            <Spinner
+                android:id="@+id/create_notify_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="23"
+                />spinner_dropdown_item.xml
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="20dp"/>
+
+        </LinearLayout>
+        <View
+            android:layout_width="0dp"
+            android:layout_weight="20"
+            android:layout_height="match_parent"/>
+
+        </LinearLayout>
+
+
+
+</LinearLayout>

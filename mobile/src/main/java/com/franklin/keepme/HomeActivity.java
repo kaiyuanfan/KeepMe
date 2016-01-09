@@ -1,8 +1,5 @@
 package com.franklin.keepme;
 
-/**
- * Created by franklin on 10/22/15.
- */
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -22,6 +19,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -57,7 +55,7 @@ public class HomeActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.home);
+        setContentView(R.layout.activity_home);
         spinnerText = new TextView(this);
         m_tabScroll = (HorizontalScrollView) findViewById(R.id.tab_scroll);
         m_tabBar = (LinearLayout) findViewById(R.id.tab_bar);
@@ -71,9 +69,9 @@ public class HomeActivity extends Activity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setActionBar(toolbar);
-        getActionBar().setDisplayShowTitleEnabled(false);
-        initializeSpinner();
+        //getActionBar().setDisplayShowTitleEnabled(false);
 
+        initializeSpinner();
         spinner = (Spinner) findViewById(R.id.toolbar_spinner);
         spinner.setAdapter(new TextViewSpinnerAdapter());
         spinner.setSelection(month, true);
@@ -229,9 +227,13 @@ public class HomeActivity extends Activity {
     }
 
     private void initializeSpinner() {
+        LayoutInflater layoutInflater = getLayoutInflater();
+
         for (int month = 0; month < 12; month++) {
-            TextView monthItem = new TextView(this);
+            TextView monthItem = (TextView) layoutInflater.inflate(android.R.layout.simple_spinner_dropdown_item, null);
             monthItem.setText(DateUtils.MONTH[month] + year);
+            monthItem.setTextColor(getResources().getColor(R.color.text));
+            monthItem.setTextSize(15);
             m_spinnerList.add(monthItem);
         }
     }
