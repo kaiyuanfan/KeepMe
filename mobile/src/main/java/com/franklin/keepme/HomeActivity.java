@@ -11,20 +11,19 @@ import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.SpinnerAdapter;
 import android.widget.Toolbar;
+
+import com.franklin.keepme.DB.DBManager;
 import com.franklin.keepme.Utils.DateUtils;
 import android.widget.Spinner;
 
@@ -51,11 +50,15 @@ public class HomeActivity extends Activity {
     private LayoutInflater m_Inflater = null;
     private TextView spinnerText;
     private boolean isFirstLoad = true;
+    DBManager dbManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        dbManager = new DBManager(this);
+
         spinnerText = new TextView(this);
         m_tabScroll = (HorizontalScrollView) findViewById(R.id.tab_scroll);
         m_tabBar = (LinearLayout) findViewById(R.id.tab_bar);
@@ -69,7 +72,7 @@ public class HomeActivity extends Activity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setActionBar(toolbar);
-        //getActionBar().setDisplayShowTitleEnabled(false);
+        getActionBar().setDisplayShowTitleEnabled(false);
 
         initializeSpinner();
         spinner = (Spinner) findViewById(R.id.toolbar_spinner);
