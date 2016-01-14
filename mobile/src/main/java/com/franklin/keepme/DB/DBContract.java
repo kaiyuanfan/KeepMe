@@ -3,7 +3,7 @@ package com.franklin.keepme.DB;
 import android.provider.BaseColumns;
 
 public class DBContract {
-    //public int _id;
+    public int _id;
     //public
     public String title;
     public String description;
@@ -19,6 +19,20 @@ public class DBContract {
                       String toTime,
                       //String location,
                       int notify) {
+        this.title = title;
+        this.description = description;
+        this.fromTime = fromTime;
+        this.toTime = toTime;
+        this.notify = notify;
+    }
+    public DBContract(int _id,
+                      String title,
+                      String description,
+                      String fromTime,
+                      String toTime,
+                      //String location,
+                      int notify) {
+        this._id = _id;
         this.title = title;
         this.description = description;
         this.fromTime = fromTime;

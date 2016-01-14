@@ -188,8 +188,8 @@ public class createActivity extends Activity implements View.OnClickListener {
         String toast = null;
         if (title.length() < 1) {
             toast = "Please input title!";
-        } else if (description.length() < 1) {
-            toast = "Please input description!";
+        /*} else if (description.length() < 1) {
+            toast = "Please input description!";*/
         } else if (fromTime.get(Calendar.YEAR) != toTime.get(Calendar.YEAR) ||
                 fromTime.get(Calendar.DAY_OF_YEAR) != toTime.get(Calendar.DAY_OF_YEAR)) {
             toast = "from & to must be the same day!";

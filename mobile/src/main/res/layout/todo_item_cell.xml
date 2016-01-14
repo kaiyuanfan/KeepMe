@@ -9,6 +9,11 @@
         android:id="@+id/todo_item_title"
         />
     <ImageView
-        android:layout_width=""
-        android:layout_height="" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/time"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/todo_item_text"/>
 </LinearLayout>
