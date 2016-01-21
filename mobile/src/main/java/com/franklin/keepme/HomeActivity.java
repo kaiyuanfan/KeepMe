@@ -33,6 +33,7 @@ import android.widget.ArrayAdapter;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toolbar;
 
@@ -288,10 +289,10 @@ public class HomeActivity extends FragmentActivity {
         public boolean onItemLongClick(final AdapterView<?> parent, final View view, final int position, long id) {
             final LinearLayout layout = (LinearLayout) view;
             TextView textView = (TextView) layout.findViewById(R.id.todo_item_title);
-            AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);  //先得到构造器
+            AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
             builder.setTitle("Delete"); //设置标题
-            builder.setMessage("Delete current item " + textView.getText() + '?'); //设置内容
-            builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() { //设置确定按钮
+            builder.setMessage("Delete current item " + textView.getText() + '?');
+            builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     ArrayAdapter adapter = (ArrayAdapter) parent.getAdapter();
@@ -299,7 +300,7 @@ public class HomeActivity extends FragmentActivity {
                     dbManager.deleteData(((DBContract) layout.getTag())._id);
                     dialog.dismiss(); //关闭dialog
                 }
-            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() { //设置取消按钮
+            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
