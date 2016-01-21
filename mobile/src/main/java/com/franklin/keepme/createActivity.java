@@ -46,8 +46,8 @@ public class createActivity extends Activity implements View.OnClickListener {
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
+        super.onDestroy();
         dbManager.closeDB();
     }
 

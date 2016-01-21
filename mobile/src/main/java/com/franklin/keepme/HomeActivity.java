@@ -12,6 +12,7 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.DataSetObserver;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
@@ -229,13 +230,20 @@ public class HomeActivity extends FragmentActivity {
         }
         View v = m_Inflater.inflate(R.layout.todo_items_list, null);
         m_contentViewList.set(arg1, v);
-        ListView listView = (ListView) v.findViewById(R.id.todo_list);
+        final ListView listView = (ListView) v.findViewById(R.id.todo_list);
         Calendar calendar = (Calendar) currentDate.clone();
         calendar.set(Calendar.DAY_OF_MONTH, arg1+1);
         String date = dateFormat.format(calendar.getTime());
-        List<DBContract> result = dbManager.retrieveData(date);
-        listView.setAdapter(new TodoListAdapter(this, R.layout.todo_item_cell, result));
-        listView.setOnItemLongClickListener(itemLongClickListener);
+        new AsyncTask<String, Void, List>() {
+            @Override
+            protected List doInBackground(String... params) {
+                return dbManager.retrieveData(params[0]);
+            }
+            protected void onPostExecute(List result) {
+                listView.setAdapter(new TodoListAdapter(HomeActivity.this, R.layout.todo_item_cell, result));
+                listView.setOnItemLongClickListener(itemLongClickListener);
+            }
+        }.execute(date);
     }
 
     class TabContentPager_OnPageChangeListener implements OnPageChangeListener {
