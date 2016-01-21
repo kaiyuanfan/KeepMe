@@ -279,7 +279,7 @@ public class HomeActivity extends FragmentActivity {
             TextView time = (TextView) convertView.findViewById(R.id.todo_item_text);
             title.setText(item.title);
             time.setText(item.fromTime.substring(11, 16) + " - " + item.toTime.substring(11, 16));
-            convertView.setTag(item._id);
+            convertView.setTag(item);
             return convertView;
         }
     }
@@ -296,7 +296,7 @@ public class HomeActivity extends FragmentActivity {
                 public void onClick(DialogInterface dialog, int which) {
                     ArrayAdapter adapter = (ArrayAdapter) parent.getAdapter();
                     adapter.remove(adapter.getItem(position));
-                    dbManager.deleteData((Integer) layout.getTag());
+                    dbManager.deleteData(((DBContract) layout.getTag())._id);
                     dialog.dismiss(); //关闭dialog
                 }
             }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() { //设置取消按钮
