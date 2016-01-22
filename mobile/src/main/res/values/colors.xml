@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#50d2c2</color>
+    <color name="colorPrimaryLight">#5CF1DF</color>
     <color name="colorPrimaryDark">#1A8979</color>
     <color name="colorAccent">#FFC761</color>
     <color name="login_button_background">#FB406E</color>

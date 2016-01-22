@@ -62,9 +62,9 @@ public class DBManager {
         return result;
     }
 
-    public void deleteData(int _id) {
+    public int deleteData(int _id) {
         String[] args = new String[1];
         args[0] = Integer.toString(_id);
-        db.delete(DBEntry.TABLE_NAME, deleteWhereClause, args);
+        return db.delete(DBEntry.TABLE_NAME, deleteWhereClause, args);
     }
 }

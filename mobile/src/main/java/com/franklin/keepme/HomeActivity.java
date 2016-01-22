@@ -6,34 +6,24 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.database.DataSetObserver;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toolbar;
 
@@ -66,6 +56,7 @@ public class HomeActivity extends FragmentActivity {
     private TabOnClickListener tabOnClickListener = new TabOnClickListener();
     private LayoutInflater m_Inflater = null;
     private boolean isFirstLoad = true;
+    private boolean isMonthChanged = false;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private ItemLongClickListener itemLongClickListener;
     DBManager dbManager;
@@ -81,6 +72,20 @@ public class HomeActivity extends FragmentActivity {
         initializeViewPager();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        dbManager.closeDB();
+    }
+
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (isFirstLoad) {
+            isFirstLoad = false;
+            CheckTab(m_tabList.get(day-1));
+        }
+    }
+
     private void initializeSpinner() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setActionBar(toolbar);
@@ -89,7 +94,7 @@ public class HomeActivity extends FragmentActivity {
         for (int month = 0; month < 12; month++) {
             spinnerArray[month] = DateUtils.MONTH[month] + year;
         }
-        spinner = (Spinner) findViewById(R.id.toolbar_spinner);
+        spinner = (Spinner) findViewById(R.id.home_toolbar_spinner);
         ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, spinnerArray);
         spinner.setAdapter(spinnerArrayAdapter);
         spinner.setSelection(month, true);
@@ -122,6 +127,8 @@ public class HomeActivity extends FragmentActivity {
         m_contentPager.addOnPageChangeListener(new TabContentPager_OnPageChangeListener());
         m_tabScroll.fullScroll(HorizontalScrollView.FOCUS_LEFT);
         spinner.setSelection(month);
+        CheckTab(m_tabList.get(0));
+        isMonthChanged = true;
     }
 
     private void initializeScrollView() {
@@ -140,34 +147,17 @@ public class HomeActivity extends FragmentActivity {
         itemLongClickListener = new ItemLongClickListener();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        dbManager.closeDB();
-    }
-
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (isFirstLoad) {
-            isFirstLoad = false;
-            CheckTab(m_tabList.get(day-1));
-        }
-    }
-
     private void addTab(TabOnClickListener tabOnClickListener, int dayInMonth) {
         m_contentViewList.add(null);
-
-        TextView tab = new TextView(this);
+        if (m_Inflater == null) {
+            m_Inflater = getLayoutInflater();
+        }
+        TextView tab = (TextView) m_Inflater.inflate(R.layout.scrollable_bar_item, m_tabBar, false);
         m_tabList.add(tab);
         tab.setId(m_tabList.size());
-        tab.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.MATCH_PARENT));
-        tab.setGravity(Gravity.CENTER);
         tab.setText(DateUtils.WEEK[(week + dayInMonth + 350 - day) % 7] + dayInMonth);
         tab.setTag(dayInMonth - 1);// 通过tag保存与内容视图关联的序号，从0开始计数
         tab.setOnClickListener(tabOnClickListener);
-        tab.setBackgroundResource(R.drawable.tab_normal_shape);
         m_tabBar.addView(tab);
     }
 
@@ -179,12 +169,14 @@ public class HomeActivity extends FragmentActivity {
     }
 
     private void CheckTab(View v) {
-        currentDate.set(Calendar.DAY_OF_MONTH, (Integer) v.getTag() + 1);
+        int index = (Integer) v.getTag();
+        currentDate.set(Calendar.DAY_OF_MONTH, index + 1);
         if (m_currentTab != null) {
-            m_currentTab.setBackgroundColor(getResources().getColor(R.color.background));
+            //m_currentTab.setBackgroundColor(getResources().getColor(R.color.background));
+            m_currentTab.setSelected(false);
         }
-        m_currentTab = (TextView) v;
-        m_currentTab.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        m_currentTab = (TextView) v;m_currentTab.setSelected(true);
+        //m_currentTab.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         m_contentPager.setCurrentItem((Integer) m_currentTab.getTag(), true);
 
         int viewLeft = v.getLeft();
@@ -196,6 +188,20 @@ public class HomeActivity extends FragmentActivity {
             m_tabScroll.scrollTo(viewLeft, 0);
         } else if (viewRight > scrollRight) {
             m_tabScroll.scrollBy(viewRight - scrollRight, 0);
+        }
+
+        int count = ((ListView) m_contentViewList.get(index).findViewById(R.id.todo_list)).getCount();
+        setBackGroundNumber(count);
+    }
+
+    private void setBackGroundNumber(int count) {
+        TextView backgroundImage = (TextView) findViewById(R.id.home_background_picture);
+        if (count == 1) {
+            backgroundImage.setText("1  Task ");
+        } else if (count > 1) {
+            backgroundImage.setText(count + "  Tasks ");
+        } else {
+            backgroundImage.setText("no  Task ");
         }
     }
 
@@ -233,7 +239,7 @@ public class HomeActivity extends FragmentActivity {
         m_contentViewList.set(arg1, v);
         final ListView listView = (ListView) v.findViewById(R.id.todo_list);
         Calendar calendar = (Calendar) currentDate.clone();
-        calendar.set(Calendar.DAY_OF_MONTH, arg1+1);
+        calendar.set(Calendar.DAY_OF_MONTH, arg1 + 1);
         String date = dateFormat.format(calendar.getTime());
         new AsyncTask<String, Void, List>() {
             @Override
@@ -243,6 +249,10 @@ public class HomeActivity extends FragmentActivity {
             protected void onPostExecute(List result) {
                 listView.setAdapter(new TodoListAdapter(HomeActivity.this, R.layout.todo_item_cell, result));
                 listView.setOnItemLongClickListener(itemLongClickListener);
+                if (isMonthChanged) {
+                    isMonthChanged = false;
+                    setBackGroundNumber(result.size());
+                }
             }
         }.execute(date);
     }
@@ -297,7 +307,13 @@ public class HomeActivity extends FragmentActivity {
                 public void onClick(DialogInterface dialog, int which) {
                     ArrayAdapter adapter = (ArrayAdapter) parent.getAdapter();
                     adapter.remove(adapter.getItem(position));
-                    dbManager.deleteData(((DBContract) layout.getTag())._id);
+                    new AsyncTask<Integer, Void, Integer>() {
+                        @Override
+                        protected Integer doInBackground(Integer... params) {
+                            return dbManager.deleteData(params[0]);
+                        }
+                    }.execute(((DBContract) layout.getTag())._id);
+                    setBackGroundNumber(adapter.getCount());
                     dialog.dismiss(); //关闭dialog
                 }
             }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
