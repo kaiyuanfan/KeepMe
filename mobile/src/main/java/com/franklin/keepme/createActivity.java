@@ -66,25 +66,7 @@ public class createActivity extends Activity implements View.OnClickListener {
         notifySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                switch (position) {
-                    case 0:
-                        notifyTime = 0;
-                        break;
-                    case 1:
-                        notifyTime = 5;
-                        break;
-                    case 2:
-                        notifyTime = 10;
-                        break;
-                    case 3:
-                        notifyTime = 15;
-                        break;
-                    case 4:
-                        notifyTime = 30;
-                        break;
-                    case 5:
-                        notifyTime = 60;
-                }
+                notifyTime = position + 1;
             }
 
             @Override

@@ -15,6 +15,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -24,6 +25,7 @@ import android.widget.ArrayAdapter;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toolbar;
 
@@ -59,6 +61,7 @@ public class HomeActivity extends FragmentActivity {
     private boolean isMonthChanged = false;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private ItemLongClickListener itemLongClickListener;
+    private ItemOnClickListener itemOnClickListener;
     DBManager dbManager;
 
     @Override
@@ -145,6 +148,7 @@ public class HomeActivity extends FragmentActivity {
         m_contentPager.setAdapter(new TabContentViewPagerAdapter());
         m_contentPager.addOnPageChangeListener(new TabContentPager_OnPageChangeListener());
         itemLongClickListener = new ItemLongClickListener();
+        itemOnClickListener = new ItemOnClickListener();
     }
 
     private void addTab(TabOnClickListener tabOnClickListener, int dayInMonth) {
@@ -248,13 +252,14 @@ public class HomeActivity extends FragmentActivity {
             }
             protected void onPostExecute(List result) {
                 listView.setAdapter(new TodoListAdapter(HomeActivity.this, R.layout.todo_item_cell, result));
-                listView.setOnItemLongClickListener(itemLongClickListener);
                 if (isMonthChanged) {
                     isMonthChanged = false;
                     setBackGroundNumber(result.size());
                 }
             }
         }.execute(date);
+        listView.setOnItemLongClickListener(itemLongClickListener);
+        listView.setOnItemClickListener(itemOnClickListener);
     }
 
     class TabContentPager_OnPageChangeListener implements OnPageChangeListener {
@@ -283,14 +288,43 @@ public class HomeActivity extends FragmentActivity {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             DBContract item = getItem(position);
-            if (convertView == null) {
+            if (convertView == null || convertView.getTag() != item) {
                 convertView = m_Inflater.inflate(resourceId, parent, false);
+
+                TextView title = (TextView) convertView.findViewById(R.id.todo_item_title);
+                title.setText(item.title);
+                TextView time = (TextView) convertView.findViewById(R.id.todo_item_text_time);
+                time.setText(item.fromTime.substring(11, 16) + " - " + item.toTime.substring(11, 16));
+
+                TextView description = (TextView) convertView.findViewById(R.id.todo_item_text_description);
+                if (item.description.length() == 0) {
+                    Log.e("KeepMe", "" + position + " description gone");
+                    LinearLayout descriptionLayout = (LinearLayout) convertView.findViewById(R.id.home_list_item_description);
+                    descriptionLayout.setVisibility(View.GONE);
+                } else {
+                    description.setText(item.description);
+                }
+
+                TextView notify = (TextView) convertView.findViewById(R.id.todo_item_text_notify);
+                int index = Math.abs(item.notify) - 1;
+                if (index == 0) {
+                    LinearLayout alarm = (LinearLayout) convertView.findViewById(R.id.home_list_item_alarm);
+                    alarm.setVisibility(View.GONE);
+                } else if (index > 1) {
+                    String[] notifyText = getResources().getStringArray(R.array.notify_array);
+                    notify.setText(notifyText[index] + " before");
+                } else {
+                    String[] notifyText = getResources().getStringArray(R.array.notify_array);
+                    notify.setText(notifyText[index]);
+                }
+                convertView.setTag(item);
             }
-            TextView title = (TextView) convertView.findViewById(R.id.todo_item_title);
-            TextView time = (TextView) convertView.findViewById(R.id.todo_item_text);
-            title.setText(item.title);
-            time.setText(item.fromTime.substring(11, 16) + " - " + item.toTime.substring(11, 16));
-            convertView.setTag(item);
+            LinearLayout linearLayout = (LinearLayout) convertView.findViewById(R.id.home_list_item_expand);
+            if (item.notify > 0) {
+                linearLayout.setVisibility(View.GONE);
+            } else {
+                linearLayout.setVisibility(View.VISIBLE);
+            }
             return convertView;
         }
     }
@@ -326,7 +360,16 @@ public class HomeActivity extends FragmentActivity {
             return false;
         }
     }
-
+    class ItemOnClickListener implements AdapterView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            ArrayAdapter adapter = (ArrayAdapter) parent.getAdapter();
+            DBContract data = (DBContract) view.getTag();
+            data.notify = - data.notify;
+            adapter.notifyDataSetChanged();
+        }
+    }
 }
+
 
 
