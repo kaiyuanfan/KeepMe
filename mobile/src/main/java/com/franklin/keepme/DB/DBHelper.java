@@ -16,16 +16,22 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String COMMA_SEP = " , ";
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + DBEntry.TABLE_NAME + " ( " +
-                    DBEntry._ID + " INTEGER PRIMARY KEY" + COMMA_SEP +
+                    DBEntry.COLUMN_NAME_ID + " INTEGER PRIMARY KEY" + COMMA_SEP +
                     //DBEntry.COLUMN_NAME_UUID + BLOB_TYPE + COMMA_SEP +
                     DBEntry.COLUMN_NAME_TITLE + TEXT_TYPE + COMMA_SEP +
                     DBEntry.COLUMN_NAME_DESCRIPTION + TEXT_TYPE + COMMA_SEP +
                     DBEntry.COLUMN_NAME_FROM_TIME + TEXT_TYPE + COMMA_SEP +
                     DBEntry.COLUMN_NAME_TO_TIME + TEXT_TYPE + COMMA_SEP +
-                    //DBEntry.COLUMN_NAME_LOCATION + TEXT_TYPE + COMMA_SEP +
-                    DBEntry.COLUMN_NAME_NOTIFY + TEXT_TYPE
+                    DBEntry.COLUMN_NAME_NOTIFY + INT_TYPE + COMMA_SEP +
+                    DBEntry.COLUMN_NAME_USER + TEXT_TYPE + COMMA_SEP +
                     //DBEntry.COLUMN_NAME_LABEL + TEXT_TYPE
-                    + " )";
+                    //DBEntry.COLUMN_NAME_LAST_MODIFIED + INT_TYPE + COMMA_SEP +
+                    DBEntry.COLUMN_NAME_DIRTY + INT_TYPE + COMMA_SEP +
+                    DBEntry.COLUMN_NAME_DELETED + INT_TYPE +
+                    " )";
+    private static final String SQL_CREATE_INDEX =
+            "CREATE INDEX date_index ON " + DBEntry.TABLE_NAME + " (" +
+                    DBEntry.COLUMN_NAME_FROM_TIME +")";
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + DBEntry.TABLE_NAME;
 
@@ -36,6 +42,7 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_ENTRIES);
+        db.execSQL(SQL_CREATE_INDEX);
     }
 
     @Override

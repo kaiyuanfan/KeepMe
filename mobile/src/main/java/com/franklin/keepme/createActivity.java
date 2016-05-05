@@ -21,7 +21,7 @@ import com.franklin.keepme.DB.DBManager;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-
+import java.util.Random;
 public class createActivity extends Activity implements View.OnClickListener {
     private EditText titleField, descriptionField, dateField, fromTimeField, toTimeField;
     private ImageView checkMarkButton;
@@ -30,25 +30,26 @@ public class createActivity extends Activity implements View.OnClickListener {
     private Calendar fromTime, toTime;
     private SimpleDateFormat dateFormatter, timeFormatter;
     private int notifyTime = 0;
-    DBManager dbManager;
+    private DBManager dbManager;
+    private String user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create);
 
-        dbManager = new DBManager(this);
+        dbManager = ((Application) getApplication()).getDbManager();
 
         findViewsById();
         checkMarkButton.setOnClickListener(this);
         setDateTimeField();
         setNotifySpinner();
+        user = "asd@gmail.com";
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        dbManager.closeDB();
     }
 
     private void findViewsById() {
@@ -159,8 +160,9 @@ public class createActivity extends Activity implements View.OnClickListener {
             return;
         }
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        DBContract data = new DBContract(title , description,
-                dateFormat.format(fromTime.getTime()), dateFormat.format(toTime.getTime()), notifyTime);
+        DBContract data = new DBContract(getID(user), title , description,
+                dateFormat.format(fromTime.getTime()), dateFormat.format(toTime.getTime()), notifyTime, user,
+                true, false);
         dbManager.putData(data);
         Intent intent = new Intent(createActivity.this, HomeActivity.class);
         startActivity(intent);
@@ -183,5 +185,12 @@ public class createActivity extends Activity implements View.OnClickListener {
         }
         Toast.makeText(this, toast, Toast.LENGTH_SHORT).show();
         return false;
+    }
+    private long getID(String user) {
+        long id = 0;
+        //id |= ((System.currentTimeMillis() - 1454809193820L)) << (64 - 42);
+        //id |= user.hashCode() >> 10 ;
+        id = new Random().nextLong();
+        return id;
     }
 }

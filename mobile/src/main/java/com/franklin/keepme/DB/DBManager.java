@@ -21,7 +21,7 @@ public class DBManager {
     final String[] columns = {DBEntry.COLUMN_NAME_TITLE, DBEntry.COLUMN_NAME_FROM_TIME, DBEntry.COLUMN_NAME_TO_TIME};
     final String selection = "from_time >= ? AND from_time <= ?";
     final String orderBy = DBEntry.COLUMN_NAME_FROM_TIME + " ASC ";
-    final String deleteWhereClause = "_id = ?";
+    final String deleteWhereClause = "id = ?";
 
     private SQLiteDatabase db;
 
@@ -37,11 +37,15 @@ public class DBManager {
     public void putData(DBContract data) {
         ContentValues values = new ContentValues();
 
+        values.put(DBEntry.COLUMN_NAME_ID, data._id);
         values.put(DBEntry.COLUMN_NAME_TITLE, data.title);
         values.put(DBEntry.COLUMN_NAME_DESCRIPTION, data.description);
         values.put(DBEntry.COLUMN_NAME_FROM_TIME, data.fromTime);
         values.put(DBEntry.COLUMN_NAME_TO_TIME, data.toTime);
         values.put(DBEntry.COLUMN_NAME_NOTIFY, data.notify);
+        values.put(DBEntry.COLUMN_NAME_USER, data.user);
+        values.put(DBEntry.COLUMN_NAME_DIRTY, data.dirty ? 1 : 0);
+        values.put(DBEntry.COLUMN_NAME_DELETED, data.delete ? 1 : 0);
 
         db.insert(DBEntry.TABLE_NAME, null, values);
     }
@@ -55,16 +59,17 @@ public class DBManager {
         Cursor cursor = db.query(DBEntry.TABLE_NAME, null, selection, selectionArgs, null, null, orderBy);
         List<DBContract> result = new ArrayList<>();
         while (cursor.moveToNext()) {
-            DBContract data = new DBContract(cursor.getInt(0), cursor.getString(1), cursor.getString(2),
-                    cursor.getString(3), cursor.getString(4), cursor.getInt(5));
+            DBContract data = new DBContract(cursor.getLong(0), cursor.getString(1), cursor.getString(2),
+                    cursor.getString(3), cursor.getString(4), cursor.getInt(5), cursor.getString(5),
+                    cursor.getInt(6) != 0, cursor.getInt(7) != 0);
             result.add(data);
         }
         return result;
     }
 
-    public int deleteData(int _id) {
+    public int deleteData(long _id) {
         String[] args = new String[1];
-        args[0] = Integer.toString(_id);
+        args[0] = String.valueOf(_id);
         return db.delete(DBEntry.TABLE_NAME, deleteWhereClause, args);
     }
 }

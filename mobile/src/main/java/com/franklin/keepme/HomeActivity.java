@@ -9,12 +9,15 @@ import java.util.List;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,7 +39,7 @@ import android.widget.Spinner;
 import android.widget.AdapterView.OnItemLongClickListener;
 
 
-public class HomeActivity extends FragmentActivity {
+public class HomeActivity extends AppCompatActivity {
 
     public static final int NUM_OF_MONTH = 12;
 
@@ -62,17 +65,27 @@ public class HomeActivity extends FragmentActivity {
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private ItemLongClickListener itemLongClickListener;
     private ItemOnClickListener itemOnClickListener;
-    DBManager dbManager;
+    private DBManager dbManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        dbManager = new DBManager(this);
+        dbManager = ((Application) getApplication()).getDbManager();
         initializeSpinner();
         initializeScrollView();
         initializeViewPager();
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Click action
+                Intent intent = new Intent(HomeActivity.this, createActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -149,6 +162,19 @@ public class HomeActivity extends FragmentActivity {
         m_contentPager.addOnPageChangeListener(new TabContentPager_OnPageChangeListener());
         itemLongClickListener = new ItemLongClickListener();
         itemOnClickListener = new ItemOnClickListener();
+        m_contentPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+
+            @Override
+            public void onPageSelected(int position) {
+                int count = ((ListView) m_contentViewList.get(position).findViewById(R.id.todo_list)).getCount();
+                setBackGroundNumber(count);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {}
+        });
     }
 
     private void addTab(TabOnClickListener tabOnClickListener, int dayInMonth) {
@@ -194,8 +220,6 @@ public class HomeActivity extends FragmentActivity {
             m_tabScroll.scrollBy(viewRight - scrollRight, 0);
         }
 
-        int count = ((ListView) m_contentViewList.get(index).findViewById(R.id.todo_list)).getCount();
-        setBackGroundNumber(count);
     }
 
     private void setBackGroundNumber(int count) {
@@ -244,6 +268,8 @@ public class HomeActivity extends FragmentActivity {
         final ListView listView = (ListView) v.findViewById(R.id.todo_list);
         Calendar calendar = (Calendar) currentDate.clone();
         calendar.set(Calendar.DAY_OF_MONTH, arg1 + 1);
+        final boolean isCurrentItem = calendar.get(Calendar.YEAR) == currentDate.get(Calendar.YEAR) &&
+                calendar.get(Calendar.DAY_OF_YEAR) == currentDate.get(Calendar.DAY_OF_YEAR);
         String date = dateFormat.format(calendar.getTime());
         new AsyncTask<String, Void, List>() {
             @Override
@@ -252,6 +278,9 @@ public class HomeActivity extends FragmentActivity {
             }
             protected void onPostExecute(List result) {
                 listView.setAdapter(new TodoListAdapter(HomeActivity.this, R.layout.todo_item_cell, result));
+                if (isCurrentItem) {
+                    setBackGroundNumber(result.size());
+                }
                 if (isMonthChanged) {
                     isMonthChanged = false;
                     setBackGroundNumber(result.size());
@@ -269,12 +298,10 @@ public class HomeActivity extends FragmentActivity {
         }
 
         @Override
-        public void onPageScrollStateChanged(int arg0) {
-        }
+        public void onPageScrollStateChanged(int arg0) {}
 
         @Override
-        public void onPageScrolled(int arg0, float arg1, int arg2) {
-        }
+        public void onPageScrolled(int arg0, float arg1, int arg2) {}
     }
 
     public class TodoListAdapter extends ArrayAdapter<DBContract> {
@@ -298,7 +325,6 @@ public class HomeActivity extends FragmentActivity {
 
                 TextView description = (TextView) convertView.findViewById(R.id.todo_item_text_description);
                 if (item.description.length() == 0) {
-                    Log.e("KeepMe", "" + position + " description gone");
                     LinearLayout descriptionLayout = (LinearLayout) convertView.findViewById(R.id.home_list_item_description);
                     descriptionLayout.setVisibility(View.GONE);
                 } else {
@@ -341,9 +367,9 @@ public class HomeActivity extends FragmentActivity {
                 public void onClick(DialogInterface dialog, int which) {
                     ArrayAdapter adapter = (ArrayAdapter) parent.getAdapter();
                     adapter.remove(adapter.getItem(position));
-                    new AsyncTask<Integer, Void, Integer>() {
+                    new AsyncTask<Long, Void, Integer>() {
                         @Override
-                        protected Integer doInBackground(Integer... params) {
+                        protected Integer doInBackground(Long ... params) {
                             return dbManager.deleteData(params[0]);
                         }
                     }.execute(((DBContract) layout.getTag())._id);
@@ -369,6 +395,7 @@ public class HomeActivity extends FragmentActivity {
             adapter.notifyDataSetChanged();
         }
     }
+
 }
 
 
